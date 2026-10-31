@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Sheet2Quiz</string>
+    <string name="title_activity_main">Sheet2Quiz</string>
+    <string name="package_name">org.sheet2quiz.app</string>
+    <string name="custom_url_scheme">org.sheet2quiz.app</string>
+</resources>

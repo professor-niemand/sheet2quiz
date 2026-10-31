@@ -1,0 +1,194 @@
+/* ==========================================================================
+   Sheet2Quiz styles
+   Sections: 1 Themes  2 Base  3 App bar and layout  4 Buttons  5 Panels and forms
+             6 Home  7 Setup  8 Quiz  9 Flashcard  10 Results and history  11 Misc
+   Colours are variables (section 1). To tweak a theme, change values there only;
+   every other section uses var(--name). Do not hard-code colours elsewhere.
+   ========================================================================== */
+
+/* ---------- 1. Themes ----------
+   Light is the default. "Auto" (no data-theme) switches to dark when the system asks.
+   Dim is a softer dark for reading in a dim room. theme.js sets the data-theme attribute. */
+:root {
+  --bg: #F7F7F5;          /* page background */
+  --fg: #1B1F24;          /* main text */
+  --muted: #5A6270;       /* secondary text */
+  --card: #FFFFFF;        /* panels, inputs, buttons */
+  --line: #D5D8DC;        /* borders */
+  --line-soft: #EEF0F2;   /* hairlines between rows */
+  --track: #E3E5E8;       /* empty part of progress bars */
+  --accent: #2F5BEA;      /* primary actions, links, focus */
+  --on-accent: #FFFFFF;   /* text on an accent background */
+  --ok: #1E7B43;  --ok-text: #1E7B43;  --ok-bg: #E6F4EA;   /* right answers */
+  --bad: #B3261E; --bad-text: #B3261E; --bad-bg: #FBE9E7;  /* wrong answers */
+  --toast-bg: #1B1F24; --toast-fg: #FFFFFF;
+  --shadow: 0 1px 2px rgba(16, 24, 40, .06), 0 6px 16px rgba(16, 24, 40, .06);
+  --r-control: 10px;      /* buttons and inputs */
+  --r-panel: 14px;        /* panels and lists */
+  --r-card: 18px;         /* the flashcard shown after an answer */
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {   /* Auto + system dark: same values as the Dark theme below */
+    --bg: #0F1115; --fg: #E8EAED; --muted: #9AA3AF; --card: #171A21; --line: #2A2F3A; --line-soft: #232831; --track: #2A2F3A;
+    --accent: #7AA2FF; --on-accent: #0F1115;
+    --ok: #4CC38A; --ok-text: #7EE0B0; --ok-bg: #12261D;
+    --bad: #FF7B72; --bad-text: #FFA39C; --bad-bg: #2B1517;
+    --toast-bg: #E8EAED; --toast-fg: #0F1115; --shadow: none;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0F1115; --fg: #E8EAED; --muted: #9AA3AF; --card: #171A21; --line: #2A2F3A; --line-soft: #232831; --track: #2A2F3A;
+  --accent: #7AA2FF; --on-accent: #0F1115;
+  --ok: #4CC38A; --ok-text: #7EE0B0; --ok-bg: #12261D;
+  --bad: #FF7B72; --bad-text: #FFA39C; --bad-bg: #2B1517;
+  --toast-bg: #E8EAED; --toast-fg: #0F1115; --shadow: none;
+  color-scheme: dark;
+}
+:root[data-theme="dim"] {
+  --bg: #1E2430; --fg: #E1E5EB; --muted: #A5AEBC; --card: #272E3C; --line: #3B4456; --line-soft: #333B4B; --track: #3B4456;
+  --accent: #8FB0FF; --on-accent: #131824;
+  --ok: #5CC795; --ok-text: #8BE3B6; --ok-bg: #1D3A31;
+  --bad: #F08A82; --bad-text: #FFAAA3; --bad-bg: #402A30;
+  --toast-bg: #E1E5EB; --toast-fg: #1E2430; --shadow: none;
+  color-scheme: dark;
+}
+
+/* ---------- 2. Base ---------- */
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+/* Type scale: 28 / 17 / 16 / 14. System fonts only: nothing is downloaded, so the app stays private and offline. */
+h1 { margin: 8px 0 4px; font-size: 1.75rem; line-height: 1.15; letter-spacing: -0.01em; }
+h2 { margin: 0 0 10px; font-size: 1.0625rem; line-height: 1.3; }
+h1:focus { outline: none; } /* h1 receives focus after each screen change for screen readers; no ring needed */
+p { margin: 0 0 8px; }
+.lead { color: var(--muted); max-width: 52ch; margin-bottom: 20px; }
+.muted { color: var(--muted); font-size: .9rem; }
+.hint { color: var(--muted); font-size: .875rem; }
+.section-title { margin: 28px 0 10px; }
+.footnote { margin-top: 32px; text-align: center; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; } /* visible keyboard focus everywhere */
+
+/* ---------- 3. App bar and layout ---------- */
+.appbar { position: sticky; top: 0; z-index: 5; display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  padding: 8px 16px; background: var(--bg); border-bottom: 1px solid var(--line-soft); }
+.brand { display: inline-flex; align-items: center; gap: 10px; padding: 4px 0; border: 0; background: none; color: var(--fg); font-weight: 700; font-size: 1.0625rem; }
+.theme-btn { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 6px 14px; border-radius: 999px; font-size: .875rem; }
+.container { max-width: 680px; margin: 0 auto; padding: 16px 16px 48px; }
+
+/* ---------- 4. Buttons ----------
+   Base style for every <button>; modifiers add emphasis. Minimum height 44px for touch. */
+button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 10px 16px;
+  border: 1px solid var(--line); border-radius: var(--r-control); background: var(--card); color: var(--fg); font: inherit; cursor: pointer; }
+button:hover:not(:disabled) { border-color: var(--accent); }
+button.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 700; }
+button.danger { color: var(--bad-text); }
+button.quiet { border-color: transparent; background: transparent; color: var(--accent); padding-inline: 8px; }
+button.small { min-height: 36px; font-size: .875rem; }
+button.icon-only { width: 44px; padding: 0; }
+button.big { width: 100%; min-height: 52px; font-size: 1.0625rem; }
+button.back { margin-left: -8px; }
+@media (prefers-reduced-motion: no-preference) { button { transition: border-color .15s, background-color .15s; } }
+
+/* ---------- 5. Panels and forms ---------- */
+.panel { margin-top: 16px; padding: 16px; border: 1px solid var(--line); border-radius: var(--r-panel); background: var(--card); }
+.field { display: block; margin-top: 12px; font-weight: 600; }
+select, input[type=number] { display: block; width: 100%; margin-top: 4px; padding: 10px; border: 1px solid var(--line); border-radius: var(--r-control);
+  background: var(--bg); color: var(--fg); font: inherit; font-weight: 400; }
+.values { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.chip { display: inline-flex; align-items: center; gap: 6px; margin: 0; padding: 6px 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--bg); font-weight: 400; }
+.chip:has(input:disabled) { opacity: .75; } /* question and answer columns are locked on */
+.row { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+details.show-panel summary { cursor: pointer; font-weight: 600; min-height: 32px; display: flex; align-items: center; }
+details.show-panel[open] summary { margin-bottom: 6px; }
+
+/* ---------- 6. Home ---------- */
+/* Actions: one panel with a row per action, rather than three separate cards */
+.actions { overflow: hidden; border: 1px solid var(--line); border-radius: var(--r-panel); background: var(--card); }
+.action { display: grid; grid-template-columns: 40px 1fr; gap: 14px; align-items: center; width: 100%; min-height: 64px; padding: 12px 16px;
+  border: 0; border-top: 1px solid var(--line-soft); border-radius: 0; background: transparent; text-align: left; }
+.action:first-child { border-top: 0; }
+.action:hover:not(:disabled) { background: color-mix(in srgb, var(--accent) 6%, transparent); }
+.action-icon { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 12px; background: color-mix(in srgb, var(--accent) 14%, transparent); color: var(--accent); }
+.primary-action .action-icon { background: var(--accent); color: var(--on-accent); }
+.action-text { display: flex; flex-direction: column; min-width: 0; }
+.action-text .hint { white-space: normal; }
+.status { display: grid; grid-template-columns: 16px 1fr; align-items: start; gap: 0 8px; margin: 10px 2px 0; color: var(--muted); font-size: .875rem; }
+.status svg { margin-top: 3px; }
+.status p { margin: 0; }
+.status button { grid-column: 2; justify-self: start; margin-left: -8px; }
+
+/* Lists of libraries (home) and quizzes (history): one rounded container, rows divided by hairlines */
+ul.cards, ul.plain { margin: 0; padding: 0; list-style: none; }
+.container > ul.cards { margin-top: 20px; }
+ul.cards { overflow: hidden; border: 1px solid var(--line); border-radius: var(--r-panel); background: var(--card); }
+ul.cards > li { padding: 14px 16px; border-top: 1px solid var(--line-soft); }
+ul.cards > li:first-child { border-top: 0; }
+.lib-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.lib-name { overflow-wrap: anywhere; font-size: 1.0625rem; }
+.lib-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.pill { flex: none; padding: 2px 10px; border-radius: 999px; background: color-mix(in srgb, var(--accent) 14%, transparent); color: var(--accent); font-size: .8125rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+ol.steps { margin: 0; padding-left: 1.25rem; }
+ol.steps li { padding: 4px 0 4px 4px; }
+
+/* ---------- 7. Setup ---------- */
+/* Sticky bar holding the main action; stays visible on long forms. :empty hides it before a button is added. */
+.actionbar { position: sticky; bottom: 0; margin: 20px -16px 0; padding: 12px 16px calc(12px + env(safe-area-inset-bottom)); background: var(--bg); border-top: 1px solid var(--line-soft); }
+.actionbar:empty { display: none; }
+.actionbar .row { justify-content: center; margin-bottom: 0; }
+
+/* ---------- 8. Quiz ---------- */
+.quiz-head { display: flex; justify-content: space-between; align-items: center; }
+progress { display: block; width: 100%; height: 6px; margin-top: 2px; appearance: none; border: 0; border-radius: 3px; background: var(--track); overflow: hidden; }
+progress::-webkit-progress-bar { background: var(--track); }
+progress::-webkit-progress-value { background: var(--accent); }
+progress::-moz-progress-bar { background: var(--accent); }
+.qlabel { display: block; margin-top: 24px; color: var(--muted); font-size: .9375rem; }
+.question { margin: 2px 0 20px; font-size: clamp(2rem, 9vw, 2.75rem); line-height: 1.1; letter-spacing: -0.02em; overflow-wrap: anywhere; }
+.options { display: grid; gap: 10px; }
+.option { justify-content: space-between; gap: 12px; min-height: 54px; padding: 12px 16px; font-size: 1.0625rem; text-align: left; overflow-wrap: anywhere; }
+.option:disabled { color: var(--fg); cursor: default; }
+.option .tag { flex: none; font-size: .8125rem; font-weight: 700; }
+.option.right { border: 2px solid var(--ok); background: var(--ok-bg); }
+.option.right .tag { color: var(--ok-text); }
+.option.wrong { border: 2px solid var(--bad); background: var(--bad-bg); }
+.option.wrong .tag { color: var(--bad-text); }
+
+/* ---------- 9. Flashcard (shown after an answer) ----------
+   The one deliberately distinctive element: the card reads like a printed index card,
+   with the question row and the highlighted answer row on top of the other columns. */
+.verdict { margin: 18px 0 8px; font-weight: 700; }
+.ok { color: var(--ok-text); } .bad { color: var(--bad-text); }
+table.flashcard { width: 100%; border-collapse: separate; border-spacing: 0; overflow: hidden; border: 1px solid var(--line); border-radius: var(--r-card); background: var(--card); box-shadow: var(--shadow); }
+.flashcard th, .flashcard td { padding: 10px 14px; border-top: 1px solid var(--line-soft); text-align: left; vertical-align: top; overflow-wrap: anywhere; }
+.flashcard tr:first-child th, .flashcard tr:first-child td { border-top: 0; }
+.flashcard th { width: 34%; color: var(--muted); font-size: .875rem; font-weight: 600; }
+.flashcard .is-question td { font-weight: 600; }
+.flashcard .is-answer { background: color-mix(in srgb, var(--accent) 12%, transparent); }
+.flashcard .is-answer th { color: var(--fg); }
+.flashcard .is-answer td { font-size: 1.125rem; font-weight: 700; }
+
+/* ---------- 10. Results and history ---------- */
+.ring { position: relative; width: 160px; height: 160px; margin: 20px auto 8px; }
+.ring svg { width: 100%; height: 100%; }
+.ring-track { stroke: var(--track); }
+.ring-value { stroke: var(--accent); }
+.ring-label { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.score { font-size: 1.875rem; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1.1; }
+dl.stats { display: flex; margin: 16px 0; border: 1px solid var(--line); border-radius: var(--r-panel); background: var(--card); }
+dl.stats > div { flex: 1; padding: 12px 6px; text-align: center; border-left: 1px solid var(--line-soft); }
+dl.stats > div:first-child { border-left: 0; }
+dl.stats dt { color: var(--muted); font-size: .8125rem; }
+dl.stats dd { margin: 0; font-size: 1.25rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+ul.plain li { display: flex; flex-direction: column; padding: 10px 0; border-top: 1px solid var(--line-soft); overflow-wrap: anywhere; }
+ul.plain li:first-child { border-top: 0; }
+.caption { margin: 16px 0 0; }
+.trend { display: block; width: 100%; height: 72px; margin: 0 0 16px; }
+.trend polyline { stroke: var(--accent); }
+.trend circle { fill: var(--accent); }
+.bar { height: 6px; margin-top: 8px; border-radius: 3px; background: var(--track); overflow: hidden; }
+.bar span { display: block; height: 100%; background: var(--accent); }
+
+/* ---------- 11. Misc ---------- */
+.toast { position: fixed; left: 50%; bottom: 96px; /* clears the sticky action bars */ z-index: 10; max-width: 90vw; padding: 10px 16px; transform: translateX(-50%); border-radius: var(--r-control); background: var(--toast-bg); color: var(--toast-fg); }

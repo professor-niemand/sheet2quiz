@@ -1,0 +1,32 @@
+{
+  "name": "sheet2quiz",
+  "version": "0.1.0",
+  "description": "Open-source quizzes from your own CSV/XLSX spreadsheets. Offline PWA + Android (Capacitor).",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "start": "python3 -m http.server 8080 -d web",
+    "test": "node --test tests/*.test.mjs",
+    "test:e2e": "node tests/e2e.mjs",
+    "android:sync": "cap sync android",
+    "android:open": "cap open android",
+    "android:debug": "cap sync android && cd android && ./gradlew assembleDebug"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@capacitor/android": "^8.6.0",
+    "@capacitor/core": "^8.6.0",
+    "@capacitor/filesystem": "^8.1.5",
+    "@capacitor/share": "^8.0.3",
+    "papaparse": "^5.7.0",
+    "read-excel-file": "^9.3.13"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.6.0"
+  },
+  "private": true,
+  "type": "module"
+}
