@@ -1,0 +1,41 @@
+# Publishes the web/ folder to GitHub Pages every time the main branch is updated.
+# The app is a static site (no build step), so deploying means "upload the web/ folder".
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]      # run on every upload to the main branch
+  workflow_dispatch:      # also allow a manual run from the Actions tab
+
+# Least privilege: the job may read the code and publish to Pages, nothing else.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# If two deploys overlap, cancel the older one.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}   # shown on the run page when finished
+    steps:
+      - name: Get the code
+        uses: actions/checkout@v4
+
+      - name: Prepare Pages
+        uses: actions/configure-pages@v5
+
+      - name: Package the web/ folder
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: web
+
+      - name: Publish
+        id: deployment
+        uses: actions/deploy-pages@v4
