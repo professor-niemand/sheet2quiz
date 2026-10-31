@@ -1,5 +1,7 @@
 # Sheet2Quiz
 
+**[Try it in your browser](https://professor-niemand.github.io/sheet2quiz/)**. It works offline once opened and can be installed to your home screen.
+
 Open-source quizzes and flashcards built from your own spreadsheets. Works offline in the browser (PWA) and as an Android app (Capacitor). No accounts, no tracking, no server: your libraries and stats stay on your device.
 
 ## Features
@@ -58,6 +60,8 @@ npm install && npm start
 ```
 
 Any static host works (GitHub Pages, Netlify, your own server): publish the `web/` folder. Service workers need HTTPS or `localhost`.
+
+This repository publishes the `web/` folder to GitHub Pages automatically on every push to `main` (see `.github/workflows/pages.yml`). Changing any cached file also means bumping `VERSION` in `web/sw.js`.
 
 ## Build the Android app
 
